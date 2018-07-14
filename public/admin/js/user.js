@@ -28,6 +28,37 @@ function render() {
   })
 }
 
+//点击弹出模态框 异步渲染,要用事件委托
+
+$('tbody').on('click','.btn',function () {
+  $('#userModal').modal('show');
+  var id = $(this).parent().data('id');
+  // console.log(id);
+  var isDelete = $(this).hasClass('btn-danger')?0:1;
+  $('.btn_confirm').off().on('click',function () {
+    
+    $.ajax({
+      type:'post',
+      url:'/user/updateUser',
+      data:{
+        id:id,
+        isDelete:isDelete
+      },
+      success:function (info) {
+        if(info.success){
+          //关闭模态框
+          $("#userModal").modal("hide");
+          //重新渲染表格
+          render();
+        }
+      }
+    })
+  })
+})
+
+
+
+
 
 
 })
