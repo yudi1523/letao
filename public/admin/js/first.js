@@ -1,6 +1,6 @@
 $(function () {
   var currentPage= 1;
-  var pageSize=2;
+  var pageSize=5;
   render();
   function render() {
     $.ajax({
@@ -33,7 +33,7 @@ $(function () {
   })
 
   //表单校验
-
+  
   $('form').bootstrapValidator({
     feedbackIcons:{
       valid: 'glyphicon glyphicon-ok',
@@ -53,6 +53,30 @@ $(function () {
       }
     }
   })
-//
+//表单验证完成后阻止默认时间,并发送ajax请求
+  $('form').on('success.form.bv',function (e) {
+    e.preventDefault();
+    $.ajax({
+      type:'post',
+      url:'/category/addTopCategory',
+      data:$('form').serialize(),
+      success:function (info) {
+        if(info.success){
+
+        //添加成功
+        //关闭模态框
+        $('#addModal').modal('hide');
+        //重新渲染第一页
+        currentPage = 1;
+        render();
+
+        //模态框数据重置
+        $('form').data('bootstrapValidator').resetForm(true);
+        $('form')[0].reset();
+        }
+      }
+    })
+  })
+
   
 })
